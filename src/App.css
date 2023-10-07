@@ -1,0 +1,15 @@
+.form {
+    margin: 50px auto;
+    width: 300px;
+}
+
+.card {
+    margin: 50px auto;
+    width: 300px;
+    text-align: center;
+    color:black
+}
+
+.error-message {
+    color: red;
+}
