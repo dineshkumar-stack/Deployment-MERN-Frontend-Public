@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import Axios from "axios"; // Import Axios which same as fetch
+import axios from "axios";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Button, Form, ListGroup, Container } from "react-bootstrap";
 
-const api = "https://server-main-lcwg.onrender.com";
+const api = "https://server-main-lcwg.onrender.com/user";
 
 export default function App() {
   const [users, setUsers] = useState([]);
@@ -13,23 +13,33 @@ export default function App() {
   const [email, setEmail] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
-  useEffect(
-    function () {
-      Axios.get(`${api}/user`).then(function (res) {
-        setUsers(res.data);
+  const fetchAllNotes = () => {
+    axios
+      .get(api)
+      .then((response) => {
+        return response;
+      })
+      .then((response) => {
+        setUsers(response.data);
+        console.log(response.data);
       });
-    },
-    [users]
-  );
+  };
+  useEffect(() => {
+    fetchAllNotes();
+  }, []);
 
   const createUser = function () {
     if (name && age && email) {
-      Axios.post(`${api}/user`, {
-        name,
-        age,
-        email,
-      })
+      axios
+        .post(api, {
+          name,
+          age,
+          email,
+        })
         .then(function (res) {
+          resetForm();
+          fetchAllNotes();
+          alert("Submitted");
           return res.data;
         })
         .catch(function (error) {
@@ -40,6 +50,12 @@ export default function App() {
     }
   };
 
+  function resetForm() {
+    setName("");
+    setAge("");
+    setEmail("");
+  }
+
   return (
     <Container>
       <Form className="form">
@@ -47,6 +63,7 @@ export default function App() {
           <Form.Label>Name</Form.Label>
           <Form.Control
             type="text"
+            value={name}
             placeholder="Enter name"
             onChange={(e) => setName(e.target.value)}
           />
@@ -56,6 +73,7 @@ export default function App() {
           <Form.Control
             type="number"
             placeholder="Enter age"
+            value={age}
             onChange={(e) => setAge(e.target.value)}
           />
         </Form.Group>
@@ -63,6 +81,7 @@ export default function App() {
           <Form.Label>Email address</Form.Label>
           <Form.Control
             type="email"
+            value={email}
             placeholder="Enter email"
             onChange={(e) => setEmail(e.target.value)}
           />
